@@ -130,6 +130,10 @@ ENV/
 env.bak/
 venv.bak/
 
+# Files
+/Autility-JSON
+/Chunked
+
 # Spyder project settings
 .spyderproject
 .spyproject
