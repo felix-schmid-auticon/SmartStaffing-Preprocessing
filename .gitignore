@@ -133,6 +133,7 @@ venv.bak/
 # Files
 /Autility-JSON
 /Chunked
+/Merged
 
 # Spyder project settings
 .spyderproject

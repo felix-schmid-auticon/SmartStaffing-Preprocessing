@@ -34,9 +34,10 @@ def abschnitte_analysieren(text):
     return abschnitte
 
 
-def abschnitte_zu_json(abschnitte):
+def abschnitte_zu_json_robust(abschnitte):
     """
-    Transformiert die analysierten Abschnitte in die gewünschte JSON-Struktur.
+    Transformiert die analysierten Abschnitte in die erweiterte JSON-Struktur,
+    mit Robustheit gegen fehlende oder leere Abschnitte.
     
     :param abschnitte: Dictionary mit analysierten Abschnitten.
     :return: JSON-kompatibles Dictionary.
@@ -57,35 +58,110 @@ def abschnitte_zu_json(abschnitte):
         "qualification": None,
         "technicalSkills": [],
         "professionalSummary": None,
+        "professionalExperience": [],
+        "education": [],
+        "certifications": [],
+        "training": [],
+        "engagements": [],
+        "projects": []
     }
 
-    if "Name" in abschnitte:
-        name_parts = abschnitte["Name"].split()
-        json_daten["firstName"] = name_parts[0] if len(name_parts) > 0 else None
-        json_daten["lastName"] = name_parts[-1] if len(name_parts) > 1 else None
-        json_daten["fullName"] = abschnitte["Name"]
+    try:
+        if "Name" in abschnitte and abschnitte["Name"]:
+            name_parts = abschnitte["Name"].split()
+            json_daten["firstName"] = name_parts[0] if len(name_parts) > 0 else None
+            json_daten["lastName"] = name_parts[-1] if len(name_parts) > 1 else None
+            json_daten["fullName"] = abschnitte["Name"]
 
-    if "Profil" in abschnitte:
-        json_daten["professionalSummary"] = abschnitte["Profil"]
+        if "Profil" in abschnitte and abschnitte["Profil"]:
+            json_daten["professionalSummary"] = abschnitte["Profil"]
 
-    if "IT-Skills" in abschnitte:
-        skills = abschnitte["IT-Skills"].split(",")
-        for skill in skills:
-            json_daten["technicalSkills"].append({
-                "category": {
-                    "name": "General Skills",
-                    "skills": [
-                        {
-                            "name": skill.strip(),
-                            "level": 1,
-                            "levelDescription": "Grundkenntnisse"
+        if "IT-Skills" in abschnitte and abschnitte["IT-Skills"]:
+            skills = abschnitte["IT-Skills"].split("\n")
+            for skill_line in skills:
+                if ":" in skill_line:
+                    category, skill_list = skill_line.split(":", 1)
+                    skill_items = skill_list.split(",")
+                    json_daten["technicalSkills"].append({
+                        "category": {
+                            "name": category.strip(),
+                            "skills": [{"name": skill.strip(), "level": 1, "levelDescription": "Grundkenntnisse"}
+                                       for skill in skill_items]
                         }
-                    ]
-                }
-            })
+                    })
 
-    if "Qualifikationen" in abschnitte:
-        json_daten["qualification"] = abschnitte["Qualifikationen"]
+        if "Qualifikationen" in abschnitte and abschnitte["Qualifikationen"]:
+            qualifications = abschnitte["Qualifikationen"].split("\n")
+            for qualification in qualifications:
+                if "Abschluss:" in qualification:
+                    json_daten["qualification"] = qualification.split(":", 1)[1].strip()
+                elif "Zertifikate:" in qualification:
+                    json_daten["certifications"] = qualification.split(":", 1)[1].strip().split(", ")
+
+        if "auticon Projekte" in abschnitte and abschnitte["auticon Projekte"]:
+            projects = abschnitte["auticon Projekte"].split("\n")
+            current_project = {}
+            for line in projects:
+                match = re.match(r"(\d{2}/\d{4})\s+–\s+(\d{2}/\d{4})\s+(.*)", line)
+                if match:
+                    if current_project:
+                        json_daten["projects"].append(current_project)
+                    current_project = {
+                        "startDate": match.group(1),
+                        "endDate": match.group(2),
+                        "description": match.group(3),
+                    }
+                elif current_project:
+                    current_project["description"] += " " + line.strip()
+            if current_project:
+                json_daten["projects"].append(current_project)
+
+        if "Beruflicher Werdegang" in abschnitte and abschnitte["Beruflicher Werdegang"]:
+            experiences = abschnitte["Beruflicher Werdegang"].split("\n")
+            for exp in experiences:
+                match = re.match(r"(Seit|(\d{2}/\d{4}))\s+–\s+((\d{2}/\d{4})|heute)\s+(.*)", exp)
+                if match:
+                    json_daten["professionalExperience"].append({
+                        "startDate": match.group(2) or match.group(1),
+                        "endDate": match.group(4) or "present",
+                        "position": match.group(5)
+                    })
+
+        if "Studium" in abschnitte and abschnitte["Studium"]:
+            studies = abschnitte["Studium"].split("\n")
+            for study in studies:
+                match = re.match(r"(\d{2}/\d{4})\s+–\s+(\d{2}/\d{4})\s+(.*)", study)
+                if match:
+                    json_daten["education"].append({
+                        "startDate": match.group(1),
+                        "endDate": match.group(2),
+                        "description": match.group(3)
+                    })
+
+        if "Weiterbildung" in abschnitte and abschnitte["Weiterbildung"]:
+            trainings = abschnitte["Weiterbildung"].split("\n")
+            for training in trainings:
+                match = re.match(r"(\d{2}/\d{4})\s+–\s+(\d{2}/\d{4})\s+(.*)", training)
+                if match:
+                    json_daten["training"].append({
+                        "startDate": match.group(1),
+                        "endDate": match.group(2),
+                        "description": match.group(3)
+                    })
+
+        if "Engagement" in abschnitte and abschnitte["Engagement"]:
+            engagements = abschnitte["Engagement"].split("\n")
+            for engagement in engagements:
+                match = re.match(r"(\d{2}/\d{4})\s+–\s+(.*)", engagement)
+                if match:
+                    json_daten["engagements"].append({
+                        "startDate": match.group(1),
+                        "description": match.group(2)
+                    })
+
+    except Exception as e:
+        print(f"Fehler bei der JSON-Transformation: {e}")
+        return None
 
     return json_daten
 
@@ -108,12 +184,14 @@ def textdateien_verarbeiten(dateipfade, ziel_datei_pfad, json_pfad):
             ziel_datei.write(gesamter_text.strip())
 
         abschnitte = abschnitte_analysieren(gesamter_text)
-        json_daten = abschnitte_zu_json(abschnitte)
+        json_daten = abschnitte_zu_json_robust(abschnitte)
 
-        with open(json_pfad, 'w', encoding='utf-8') as json_datei:
-            json.dump(json_daten, json_datei, indent=4, ensure_ascii=False)
-
-        print(f"JSON-Datei für {json_pfad} erfolgreich erstellt.")
+        if json_daten:
+            with open(json_pfad, 'w', encoding='utf-8') as json_datei:
+                json.dump(json_daten, json_datei, indent=4, ensure_ascii=False)
+            print(f"JSON-Datei für {json_pfad} erfolgreich erstellt.")
+        else:
+            print(f"Fehler: JSON konnte für {dateipfade} nicht erstellt werden.")
 
     except Exception as e:
         print(f"Es gab ein Problem beim Verarbeiten der Dateien {dateipfade}: {e}")
