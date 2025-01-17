@@ -64,12 +64,31 @@ def extrahiere_daten_mit_regex(abschnitt_inhalt):
 
 def abschnitte_zu_json(abschnitte):
     """
-    Transformiert Abschnitte in JSON-kompatibles Format.
+    Transformiert Abschnitte in JSON-kompatibles Format und übersetzt die Abschnittsnamen ins Englische.
     """
+    # Mapping der deutschen Abschnittsnamen zu englischen Bezeichnungen
+    mapping = {
+        "auticon Projekte": "auticonProjects",
+        "Studium Projekte": "studyProjects",
+        "Projekte": "projects",
+        "Ausbildung": "education",
+        "Beruflicher Werdegang": "professionalExperience",
+        "Studium": "studies",
+        "Weiterbildung": "training",
+        "Engagement": "engagements",
+        "Private Projekte": "privateProjects",
+        "Weitere Projekte": "furtherProjects",
+        "auticon Weiterbildungen": "auticonTraining",
+        "Zertifikate": "certificates",
+        "Zertifizierungen": "certifications",
+    }
+
     json_daten = {}
     for abschnitt, inhalt in abschnitte.items():
+        # Übersetze Abschnittsnamen ins Englische
+        englischer_abschnitt = mapping.get(abschnitt, abschnitt)
         if inhalt:
-            json_daten[abschnitt] = extrahiere_daten_mit_regex(inhalt)
+            json_daten[englischer_abschnitt] = extrahiere_daten_mit_regex(inhalt)
     return json_daten
 
 
