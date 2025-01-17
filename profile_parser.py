@@ -132,7 +132,7 @@ def verarbeite_alle_consultants(chunked_verzeichnis):
     bekannte_abschnitte = [
         "auticon Projekte", "Studium Projekte", "Projekte", "Ausbildung", "Beruflicher Werdegang",
         "Studium", "Weiterbildung", "Engagement", "Private Projekte", "Weitere Projekte",
-        "auticon Weiterbildungen", "Zertifikate", "Zertifizierungen",
+        "auticon Weiterbildungen"
     ]
 
     if not os.path.exists(chunked_verzeichnis):
