@@ -1,2 +1,2 @@
-# text-profils_to_json-profiles
+# text-to-json
 Convert text-profiles into structured json-files.
