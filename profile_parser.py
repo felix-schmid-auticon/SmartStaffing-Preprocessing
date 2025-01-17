@@ -118,25 +118,26 @@ def verarbeite_alle_consultants(chunked_verzeichnis):
 
     if not os.path.exists(chunked_verzeichnis):
         print(f"Der Ordner '{chunked_verzeichnis}' wurde nicht gefunden.")
-        return
+        os.makedirs(chunked_verzeichnis, exist_ok=True)
 
     dateien = sorted([f for f in os.listdir(chunked_verzeichnis) if f.endswith('.txt')])
     consultants = {}
 
+    # Suche nach Eingabedateien mit passendem Muster
     for datei in dateien:
-        match = re.match(r"^([A-Za-z]+_[A-Za-z]+)_zusammengefuehrt\.txt$", datei)
+        match = re.match(r"^([A-Za-z]+_[A-Za-z]+)_[0-9]+\.txt$", datei)  # Dateien wie John_Doe_1.txt
         if not match:
             continue
-        name = match.group(1)
+        name = match.group(1)  # Extrahiere 'John_Doe'
         if name not in consultants:
             consultants[name] = []
         consultants[name].append(os.path.join(chunked_verzeichnis, datei))
 
+    # Verarbeitung der Consultants
     for name, files in consultants.items():
         ziel_datei_pfad = os.path.join(chunked_verzeichnis, f"{name}_zusammengefuehrt.txt")
         json_pfad = os.path.join(chunked_verzeichnis, f"{name}.json")
         textdateien_verarbeiten(files, ziel_datei_pfad, json_pfad, bekannte_abschnitte)
-
 
 if __name__ == "__main__":
     chunked_verzeichnis = os.path.join(os.getcwd(), "Chunked")
