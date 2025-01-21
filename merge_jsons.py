@@ -5,7 +5,7 @@ import json
 def append_json_data(file1_path, file2_path):
     """
     Liest zwei JSON-Dateien ein und fügt die Inhalte der zweiten Datei
-    direkt an die erste Datei hinzu, ohne additionalInfo zu verwenden.
+    direkt an die erste Datei hinzu.
 
     :param file1_path: Pfad zur ersten JSON-Datei (Basis).
     :param file2_path: Pfad zur zweiten JSON-Datei (hinzuzufügende Daten).
@@ -17,7 +17,7 @@ def append_json_data(file1_path, file2_path):
         with open(file2_path, 'r', encoding='utf-8') as file2:
             data2 = json.load(file2)
 
-        # Inhalte von file2 an data1 "anhängen", ohne additionalInfo
+        # Inhalte von file2 an data1 "anhängen"
         if isinstance(data1, dict) and isinstance(data2, dict):
             for key, value in data2.items():
                 if key in data1 and isinstance(data1[key], list) and isinstance(value, list):
