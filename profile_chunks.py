@@ -17,6 +17,13 @@ sections = [
     "certificates", "certifications"
 ]
 
+# Liste der zusätzlichen Felder, die berücksichtigt werden sollen
+additional_fields = [
+    "firstName", "lastName", "fullName", "autilityId", "autilityUrl",
+    "position", "availibility", "workHoursPerWeek", "location",
+    "travelArrangement", "speciality", "preferredWorkingAreas"
+]
+
 # Funktion zur Erstellung einzelner Chunk-Dateien mit Nummerierung
 def chunk_consultant_profile(file_path):
     with open(file_path, 'r', encoding='utf-8') as file:
@@ -27,9 +34,31 @@ def chunk_consultant_profile(file_path):
     profile_name = profile.get("fullName", "unknown")
     chunk_counter = 1  # Initiale Nummerierung der Chunks
 
+    # Zusätzliche Felder als eigene Chunks hinzufügen
+    for field in additional_fields:
+        if field in profile:
+            value = profile[field]
+            
+            # Fehlerbehandlung für verschiedene Datentypen
+            if isinstance(value, list):
+                content = ", ".join(map(str, value))
+            elif isinstance(value, (str, int, float)):
+                content = str(value)
+            else:
+                content = "N/A"  # Fallback für unerwartete Typen
+            
+            chunks.append({
+                f"Chunk {chunk_counter}": {
+                    "type": field,
+                    "content": content,
+                    "source": profile_name
+                }
+            })
+            chunk_counter += 1
+
     # Iteriere durch alle Abschnitte im Profil und erstelle Chunks mit Nummerierung
     for section in sections:
-        if section in profile:
+        if section in profile and section != "certificates":  # Zertifikate separat behandeln
             for entry in profile[section]:
                 chunks.append({
                     f"Chunk {chunk_counter}": {
@@ -39,6 +68,21 @@ def chunk_consultant_profile(file_path):
                     }
                 })
                 chunk_counter += 1
+
+    # Zertifikate separat verarbeiten
+    if "certificates" in profile:
+        for certificate in profile["certificates"]:
+            skills_content = ", ".join(certificate.get("skills", []))
+            chunks.append({
+                f"Chunk {chunk_counter}": {
+                    "type": "certificates",
+                    "name": certificate.get("name", "N/A"),
+                    "date": certificate.get("date", "N/A"),
+                    "content": f"Skills: {skills_content}",
+                    "source": profile_name
+                }
+            })
+            chunk_counter += 1
 
     # Skills separat verarbeiten
     if "technicalSkills" in profile:
