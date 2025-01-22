@@ -17,7 +17,7 @@ sections = [
     "certificates", "certifications"
 ]
 
-# Funktion zur Erstellung einzelner Chunk-Dateien
+# Funktion zur Erstellung einzelner Chunk-Dateien mit Nummerierung
 def chunk_consultant_profile(file_path):
     with open(file_path, 'r', encoding='utf-8') as file:
         profile = json.load(file)
@@ -25,16 +25,20 @@ def chunk_consultant_profile(file_path):
     chunks = []
     profile_id = profile.get("autilityId", "unknown")
     profile_name = profile.get("fullName", "unknown")
+    chunk_counter = 1  # Initiale Nummerierung der Chunks
 
-    # Iteriere durch alle Abschnitte im Profil und erstelle Chunks
+    # Iteriere durch alle Abschnitte im Profil und erstelle Chunks mit Nummerierung
     for section in sections:
         if section in profile:
             for entry in profile[section]:
                 chunks.append({
-                    "type": section,
-                    "content": f"{entry.get('startDate', 'N/A')} - {entry.get('endDate', 'N/A')} - {entry.get('description', '')}",
-                    "source": profile_name
+                    f"Chunk {chunk_counter}": {
+                        "type": section,
+                        "content": f"{entry.get('startDate', 'N/A')} - {entry.get('endDate', 'N/A')} - {entry.get('description', '')}",
+                        "source": profile_name
+                    }
                 })
+                chunk_counter += 1
 
     # Skills separat verarbeiten
     if "technicalSkills" in profile:
@@ -42,18 +46,23 @@ def chunk_consultant_profile(file_path):
             category_name = skill_category["category"]["name"]
             skills = [skill["name"] for skill in skill_category["category"]["skills"]]
             chunks.append({
-                "type": "technicalSkills",
-                "category": category_name,
-                "content": f"{category_name}: {', '.join(skills)}",
-                "source": profile_name
+                f"Chunk {chunk_counter}": {
+                    "type": "technicalSkills",
+                    "category": category_name,
+                    "content": f"{category_name}: {', '.join(skills)}",
+                    "source": profile_name
+                }
             })
+            chunk_counter += 1
 
     # Berufliche Zusammenfassung als einzelner Chunk
     if "professionalSummary" in profile:
         chunks.append({
-            "type": "professionalSummary",
-            "content": profile["professionalSummary"],
-            "source": profile_name
+            f"Chunk {chunk_counter}": {
+                "type": "professionalSummary",
+                "content": profile["professionalSummary"],
+                "source": profile_name
+            }
         })
 
     # Speichere Chunks in einer separaten JSON-Datei pro Profil im Ordner profile_chunks
