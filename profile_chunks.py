@@ -21,7 +21,8 @@ sections = [
 additional_fields = [
     "firstName", "lastName", "fullName", "autilityId", "autilityUrl",
     "position", "availibility", "workHoursPerWeek", "location",
-    "travelArrangement", "speciality", "preferredWorkingAreas"
+    "travelArrangement", "speciality", "preferredWorkingAreas",
+    "qualification"
 ]
 
 # Funktion zur Erstellung einzelner Chunk-Dateien mit Nummerierung
@@ -58,7 +59,7 @@ def chunk_consultant_profile(file_path):
 
     # Iteriere durch alle Abschnitte im Profil und erstelle Chunks mit Nummerierung
     for section in sections:
-        if section in profile and section != "certificates":  # Zertifikate separat behandeln
+        if section in profile and section not in ["certificates", "languageSkills"]:
             for entry in profile[section]:
                 chunks.append({
                     f"Chunk {chunk_counter}": {
@@ -79,6 +80,20 @@ def chunk_consultant_profile(file_path):
                     "name": certificate.get("name", "N/A"),
                     "date": certificate.get("date", "N/A"),
                     "content": f"Skills: {skills_content}",
+                    "source": profile_name
+                }
+            })
+            chunk_counter += 1
+
+    # Sprachkenntnisse separat verarbeiten
+    if "languageSkills" in profile:
+        for language in profile["languageSkills"]:
+            chunks.append({
+                f"Chunk {chunk_counter}": {
+                    "type": "languageSkills",
+                    "name": language.get("name", "N/A"),
+                    "level": language.get("level", "N/A"),
+                    "content": language.get("levelDescription", "N/A"),
                     "source": profile_name
                 }
             })
