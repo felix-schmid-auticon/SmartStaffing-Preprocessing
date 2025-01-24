@@ -49,7 +49,7 @@ def chunk_consultant_profile(file_path):
                 content = "N/A"  # Fallback für unerwartete Typen
             
             chunks.append({
-                f"Chunk {chunk_counter}": {
+                f"ChunkID {chunk_counter}": {
                     "type": field,
                     "content": content,
                     "source": profile_name
@@ -62,7 +62,7 @@ def chunk_consultant_profile(file_path):
         if section in profile and section not in ["certificates", "languageSkills"]:
             for entry in profile[section]:
                 chunks.append({
-                    f"Chunk {chunk_counter}": {
+                    f"ChunkID {chunk_counter}": {
                         "type": section,
                         "content": f"{entry.get('startDate', 'N/A')} - {entry.get('endDate', 'N/A')} - {entry.get('description', '')}",
                         "source": profile_name
@@ -75,7 +75,7 @@ def chunk_consultant_profile(file_path):
         for certificate in profile["certificates"]:
             skills_content = ", ".join(certificate.get("skills", []))
             chunks.append({
-                f"Chunk {chunk_counter}": {
+                f"ChunkID {chunk_counter}": {
                     "type": "certificates",
                     "name": certificate.get("name", "N/A"),
                     "date": certificate.get("date", "N/A"),
@@ -89,7 +89,7 @@ def chunk_consultant_profile(file_path):
     if "languageSkills" in profile:
         for language in profile["languageSkills"]:
             chunks.append({
-                f"Chunk {chunk_counter}": {
+                f"ChunkID {chunk_counter}": {
                     "type": "languageSkills",
                     "name": language.get("name", "N/A"),
                     "level": language.get("level", "N/A"),
@@ -105,7 +105,7 @@ def chunk_consultant_profile(file_path):
             category_name = skill_category["category"]["name"]
             skills = [skill["name"] for skill in skill_category["category"]["skills"]]
             chunks.append({
-                f"Chunk {chunk_counter}": {
+                f"ChunkID {chunk_counter}": {
                     "type": "technicalSkills",
                     "category": category_name,
                     "content": f"{category_name}: {', '.join(skills)}",
@@ -117,7 +117,7 @@ def chunk_consultant_profile(file_path):
     # Berufliche Zusammenfassung als einzelner Chunk
     if "professionalSummary" in profile:
         chunks.append({
-            f"Chunk {chunk_counter}": {
+            f"ChunkID {chunk_counter}": {
                 "type": "professionalSummary",
                 "content": profile["professionalSummary"],
                 "source": profile_name
