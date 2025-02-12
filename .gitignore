@@ -135,6 +135,7 @@ venv.bak/
 /Chunked
 /Merged
 /Profile_Chunks
+/Optimized_Chunks
 
 # Spyder project settings
 .spyderproject

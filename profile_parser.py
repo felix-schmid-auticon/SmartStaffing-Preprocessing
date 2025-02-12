@@ -154,7 +154,7 @@ def verarbeite_alle_consultants(chunked_verzeichnis):
 
     # Verarbeitung der Consultants
     for name, files in consultants.items():
-        ziel_datei_pfad = os.path.join(chunked_verzeichnis, f"{name}_zusammengefuehrt.txt")
+        ziel_datei_pfad = os.path.join(chunked_verzeichnis, f"{name}_zusammengefasst.txt")
         json_pfad = os.path.join(chunked_verzeichnis, f"{name}.json")
         textdateien_verarbeiten(files, ziel_datei_pfad, json_pfad, bekannte_abschnitte)
 

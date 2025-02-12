@@ -14,7 +14,7 @@ def loesche_json_und_zusammengefuehrt_txt(ordner):
     dateien = os.listdir(ordner)
     for datei in dateien:
         # Überprüfen, ob die Datei eine .json-Datei oder eine _zusammengefuehrt.txt ist
-        if datei.endswith(".json") or datei.endswith("_zusammengefuehrt.txt"):
+        if datei.endswith(".json") or datei.endswith("_zusammengefasst.txt"):
             datei_pfad = os.path.join(ordner, datei)
             try:
                 os.remove(datei_pfad)
