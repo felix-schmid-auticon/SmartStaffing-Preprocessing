@@ -13,7 +13,7 @@ Funktionen, Abhängigkeiten und Zusammenhänge der Skripte:
 1. profile_parser.py fasst die Text-Profile im Ordner Chunked zusammen und erstellt von dieser Zusammenfassung ein JSON-Datei.
 2. merge_jsons.py fasst die JSON-Dateien aus den Ordnern Chunked und Autility-JSON zusammen und speichert eine JSON-Datei für jeden Consultant im Ordner Merged.
 3. profile_chunks.py zerlegt jeden Abschnitt in den JSON-Profilen in einzelne Chunks und speichert eine JSON-Datei mit den Chunks für jedes Profil in Profile_Chunks.
-4. profile_chunks_optimized.py berücksichtigt die Chunk-Size bzw. Anzahl Tokens. Die Informationen werden in Metadaten und Chunks aufgeteilt. Chunks mit wenig Token werden zusammengefasst, große Chunks werden aufgeteilt. Eine eindeutige ID für jeden Chunk soll die Abrufbarkeit erleichtern. profile_chunks_optimized.py ist abhängig von den Ergebnissen aus profile_chunks.py.
+4. profile_chunks_optimized.py berücksichtigt die Chunk-Size bzw. Anzahl Tokens. Die Informationen werden in Metadaten und Chunks aufgeteilt. Chunks mit wenig Token werden zusammengefasst, große Chunks werden aufgeteilt. Eine eindeutige ID für jeden Chunk soll die Abrufbarkeit erleichtern. profile_chunks_optimized.py ist abhängig von den Ergebnissen aus profile_chunks.py. Die Ergebnisse werden in Optimized_Chunks gespeichert.
 
 Hilfsfunktionen:
 
