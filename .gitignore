@@ -134,8 +134,10 @@ venv.bak/
 /Autility-JSON
 /Chunked
 /Merged
-/Profile_Chunks
 /Optimized_Chunks
+/Profile_Chunks
+/Markdown_Profiles
+/JSON_to_Markdown_Profiles
 
 # Spyder project settings
 .spyderproject
