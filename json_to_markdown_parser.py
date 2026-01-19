@@ -4,7 +4,7 @@ from pathlib import Path
 
 # Eingabe- und Ausgabeordner
 INPUT_DIR = "Merged"
-OUTPUT_DIR = "JSON_to_Markdown_Profiles"
+OUTPUT_DIR = "Markdown_Profiles"
 
 # Ausgabeordner sicherstellen
 os.makedirs(OUTPUT_DIR, exist_ok=True)
