@@ -138,6 +138,7 @@ venv.bak/
 /Profile_Chunks
 /Markdown_Profiles
 /JSON_to_Markdown_Profiles
+/Markdown_Pseudo_Profiles
 
 # Spyder project settings
 .spyderproject
